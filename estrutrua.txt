@@ -1,0 +1,18 @@
+**Instalações**
+npm instal @react-navigation/native
+npm instal @react-navigation/nnative-stackative
+npm instal @react-navigation/bottom-tabs
+npm instal @react-navigation/drawer
+npm instal react-native-screens react-native-safe-area-context
+npm install react-native-gesture-handler
+
+
+**Vericiar se existem bibliotecas desatualizadas**
+npm outdated   # Verifcar se existem bibliotecas desatualizadas
+npm update     # Atualizar as bibliotecas
+
+
+Rotas
+- Home (Autenticação Login)
+  - Transaction list(Lista de Transações)
+  - Transaction Form(Formulário de Nova Transação)
