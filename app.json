@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "thoughtful-yellow-bacon",
+    "name": "React Native AT 1",
     "slug": "snack-65fe122d-e924-411d-98c1-67df97c2d273",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -23,6 +23,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "entryPoint": "./App.jsx"
   }
 }
