@@ -5,6 +5,8 @@ npm instal @react-navigation/bottom-tabs
 npm instal @react-navigation/drawer
 npm instal react-native-screens react-native-safe-area-context
 npm install react-native-gesture-handler
+npm install @react-native-picker/picker
+npm install @react-native-community/datetimepicker
 
 
 **Vericiar se existem bibliotecas desatualizadas**

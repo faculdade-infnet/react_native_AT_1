@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#3e3e3e",
     borderRadius: 5,
-    textAlign: "center",
   },  
   button: {
     marginHorizontal: 10,
