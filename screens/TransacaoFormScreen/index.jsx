@@ -5,30 +5,25 @@ import { Picker } from '@react-native-picker/picker';
 import IconDate from 'react-native-vector-icons/Entypo';
 import IconTime from 'react-native-vector-icons/MaterialCommunityIcons';
 import obterMoedas from '../../api/obterMoedas';
+import listaCategorias from '../../data/categorias';
+import firebase from '../../api/parametros';
 
-const url = "https://react-native-infnet-default-rtdb.firebaseio.com/"
-const urlMoedas = 'https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/Moedas?$top=100&$format=json.'
-const resource = "transacoes"
-const listaCategoria = [
-  { label: 'Bar', value: 'Bar' },
-  { label: 'Farmácia', value: 'Farmácia' },
-  { label: 'Lanchonete', value: 'Lanchonete' },
-  { label: 'Mercado', value: 'Mercado' },
-  { label: 'Padaria', value: 'Padaria' },
-]
 
 export default function TransacaoFormScreen() {  
   const [isLoading, setLoading] = useState(false);
+  const [produtos, setProdutos] = useState([]);
+  const [listaProdutos, setListaProdutos] = useState([]); 
+
   const [datePickerShow, setDatePickerShow] = useState(false);
   const [timePickerShow, setTimePickerShow] = useState(false);
-  const [moedas, setMoedas] = useState([]); 
+  const [listaMoedas, setListaMoedas] = useState([]); 
 
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
   const [data, setData] = useState(new Date());
   const [time, setTime] = useState(new Date());
-  const [moeda, setMoeda] = useState("");
-  const [categoria, setCategoria] = useState("");
+  const [moeda, setMoeda] = useState([]);
+  const [categoria, setCategoria] = useState([]);
   const [tipo, setTipo] = useState(false);    
 
   const renderDatePicker = () => {
@@ -54,18 +49,20 @@ export default function TransacaoFormScreen() {
   };
 
   const onSubmit = (novoItem) => {
-    // console.log(novoItem.descricao);
-    // console.log(novoItem.preco);
-    // console.log(novoItem.data.toLocaleDateString('pt-BR'));
-    // console.log(novoItem.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
-    // console.log(novoItem.moeda);
-    // console.log(novoItem.categoria);
-    // if (!novoItem.tipo){
-    //   console.log('Receita');
-    // }
-    // else{
-    //   console.log('Despesa');
-    // }
+    setLoading(true);
+    fetch(`${firebase.url}${firebase.transacoes}.json`, {
+          method: "POST",
+          body: JSON.stringify(novoItem)
+    })
+    .then(async resp => {
+          const id = await resp.json();       
+          const novoItemComId = { ...novoItem, id: id.name }; 
+          const listaProdutos = [...produtos,- novoItemComId];          
+          setProdutos(listaProdutos);
+          alert("Transação cadastrada com sucesso!");
+    })
+    .catch(error => { Alert.alert(error.message); })
+    .finally(_ => setLoading(false));    
   }
 
   // Função para carregar as moedas
@@ -73,7 +70,7 @@ export default function TransacaoFormScreen() {
     try {
       const simbolos = await obterMoedas();  // Chama a função obterMoedas para pegar os símbolos
       if (Array.isArray(simbolos)) {
-        setMoedas(simbolos); // Atualiza o estado com os símbolos das moedas
+        setListaMoedas(simbolos); // Atualiza o estado com os símbolos das moedas
       } else {
         console.error("Erro: A resposta das moedas não é um array.");
       }
@@ -82,8 +79,24 @@ export default function TransacaoFormScreen() {
     }
   };
 
+  const formatarValor = (valor) => {
+    // Remove caracteres não numéricos exceto ponto (.)
+    const somenteNumeros = valor.replace(/[^0-9.]/g, "");
+  
+    // Garante que haverá no máximo um ponto decimal
+    const [inteiro, decimal] = somenteNumeros.split(".");
+    let formatado = inteiro;
+  
+    if (decimal !== undefined) {
+      formatado += "." + decimal.slice(0, 2);
+    }
+  
+    return formatado;
+  };
+  
+
   useEffect(() => {    
-    carregarMoedas(); // Chama a função para carregar as moedas
+    carregarMoedas();
   }, []);
  
 
@@ -101,7 +114,10 @@ export default function TransacaoFormScreen() {
           placeholder='Valor'
           keyboardType='decimal-pad'        
           value={preco}
-          onChangeText={setPreco}
+          onChangeText={(value) => {
+            const formatado = formatarValor(value);
+            setPreco(formatado);
+          }}
         />        
       </View> 
 
@@ -128,19 +144,17 @@ export default function TransacaoFormScreen() {
       {/* Select */}
       <View>
         <Picker style={styles.comboBox} selectedValue={moeda} onValueChange={(value) => setMoeda(value)}>
-          {moedas && moedas.length > 0 ? (
-              moedas.map((simbolo, i) => (
-                <Picker.Item key={i} label={simbolo} value={simbolo} />
-              ))
-            ) : (
-              <Picker.Item label="Carregando moedas..." value="" />
-            )}
+          <Picker.Item label="Selecione uma moeda" value="" />
+          { listaMoedas.map((simbolo, i) => (
+              <Picker.Item key={i} label={simbolo} value={simbolo} />
+            ))
+          }
         </Picker>
       </View>
       <View>
         <Picker style={styles.comboBox} selectedValue={categoria} onValueChange={(value) => setCategoria(value)}>
-          {!categoria && <Picker.Item label="Selecione uma Opção" value="" />}
-          {listaCategoria.map((item, i )=> (
+        <Picker.Item label="Selecione uma categoria" value="" />
+          {listaCategorias.map((item, i )=> (
             <Picker.Item key={i} label={item.label} value={item.value} />
           ))}
         </Picker>
@@ -164,11 +178,11 @@ export default function TransacaoFormScreen() {
           const novoProduto = {
             descricao: descricao,
             preco: preco,
-            data: data,
-            time: time,
+            data: data.toLocaleDateString('pt-BR'),
+            time: time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
             moeda: moeda,
             categoria: categoria,
-            tipo: tipo,
+            tipo: tipo ? "Desepesa": "Receita",
           };
           onSubmit(novoProduto);
         }}
