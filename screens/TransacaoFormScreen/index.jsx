@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Switch, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import IconDate from 'react-native-vector-icons/Entypo';
 import IconTime from 'react-native-vector-icons/MaterialCommunityIcons';
+import obterMoedas from '../../api/obterMoedas';
 
 const url = "https://react-native-infnet-default-rtdb.firebaseio.com/"
+const urlMoedas = 'https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/Moedas?$top=100&$format=json.'
 const resource = "transacoes"
 const listaCategoria = [
   { label: 'Bar', value: 'Bar' },
@@ -15,10 +17,11 @@ const listaCategoria = [
   { label: 'Padaria', value: 'Padaria' },
 ]
 
-export default function TransacaoFormScreen() {    
+export default function TransacaoFormScreen() {  
   const [isLoading, setLoading] = useState(false);
   const [datePickerShow, setDatePickerShow] = useState(false);
   const [timePickerShow, setTimePickerShow] = useState(false);
+  const [moedas, setMoedas] = useState([]); 
 
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
@@ -26,8 +29,8 @@ export default function TransacaoFormScreen() {
   const [time, setTime] = useState(new Date());
   const [moeda, setMoeda] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [tipo, setTipo] = useState(false);  
-  
+  const [tipo, setTipo] = useState(false);    
+
   const renderDatePicker = () => {
     // Se o state dateTimePickerShow for true o componente é rederizado
     if (datePickerShow) {
@@ -51,34 +54,38 @@ export default function TransacaoFormScreen() {
   };
 
   const onSubmit = (novoItem) => {
-    console.log(novoItem.descricao);
-    console.log(novoItem.preco);
-    console.log(novoItem.data.toLocaleDateString('pt-BR'));
-    console.log(novoItem.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
-    console.log(novoItem.moeda);
-    console.log(novoItem.categoria);
-    if (!novoItem.tipo){
-      console.log('Receita');
-    }
-    else{
-      console.log('Despesa');
-    }
+    // console.log(novoItem.descricao);
+    // console.log(novoItem.preco);
+    // console.log(novoItem.data.toLocaleDateString('pt-BR'));
+    // console.log(novoItem.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+    // console.log(novoItem.moeda);
+    // console.log(novoItem.categoria);
+    // if (!novoItem.tipo){
+    //   console.log('Receita');
+    // }
+    // else{
+    //   console.log('Despesa');
+    // }
+  }
 
-    // setLoading(true);
-    // fetch(`${url}${resource}.json`, {
-    //       method: "POST", // GET
-    //       body: JSON.stringify(novoItem)
-    // })
-    // .then(async resp => {
-    //       const id = await resp.json();        
-    //       const listaProdutos = [...produtos];
-    //       novoItem.id = id.name;
-    //       listaProdutos.push(novoItem);
-    //       setProdutos(listaProdutos);
-    // })
-    // .catch(error => { Alert.alert(error.message); })
-    // .finally(_ => setLoading(false));
- }
+  // Função para carregar as moedas
+  const carregarMoedas = async () => {
+    try {
+      const simbolos = await obterMoedas();  // Chama a função obterMoedas para pegar os símbolos
+      if (Array.isArray(simbolos)) {
+        setMoedas(simbolos); // Atualiza o estado com os símbolos das moedas
+      } else {
+        console.error("Erro: A resposta das moedas não é um array.");
+      }
+    } catch (error) {
+      console.error("Erro ao carregar as moedas:", error);
+    }
+  };
+
+  useEffect(() => {    
+    carregarMoedas(); // Chama a função para carregar as moedas
+  }, []);
+ 
 
   return (
     <View style={styles.container}>
@@ -121,15 +128,20 @@ export default function TransacaoFormScreen() {
       {/* Select */}
       <View>
         <Picker style={styles.comboBox} selectedValue={moeda} onValueChange={(value) => setMoeda(value)}>
-            <Picker.Item label="USD" value="usd" />
-            <Picker.Item label="BRL" value="brl" />
+          {moedas && moedas.length > 0 ? (
+              moedas.map((simbolo, i) => (
+                <Picker.Item key={i} label={simbolo} value={simbolo} />
+              ))
+            ) : (
+              <Picker.Item label="Carregando moedas..." value="" />
+            )}
         </Picker>
       </View>
       <View>
         <Picker style={styles.comboBox} selectedValue={categoria} onValueChange={(value) => setCategoria(value)}>
           {!categoria && <Picker.Item label="Selecione uma Opção" value="" />}
-          {listaCategoria.map(item => (
-            <Picker.Item label={item.label} value={item.value} key={item.value} />
+          {listaCategoria.map((item, i )=> (
+            <Picker.Item key={i} label={item.label} value={item.value} />
           ))}
         </Picker>
       </View>
