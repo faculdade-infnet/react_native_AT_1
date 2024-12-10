@@ -15,7 +15,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>        
-        <Stack.Screen name="login" component={LoginScreen} />
+        {/* <Stack.Screen  name='transacaoForm' 
+                       options={{ title: "Cadstro de Transação" }}
+                       component={TransacaoFormScreen} /> */}
+        <Drawer.Screen 
+          name='transacaoList' 
+          options={{ title: "Lista de Transasções" }}
+          component={TransacaoListScreen}
+        />
+        {/* <Stack.Screen name="login" component={LoginScreen} /> */}
         <Stack.Screen name="home" component={DrawerNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
