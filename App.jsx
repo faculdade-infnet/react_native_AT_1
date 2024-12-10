@@ -20,9 +20,10 @@ export default function App() {
                        component={TransacaoFormScreen} /> */}
         <Drawer.Screen 
           name='transacaoList' 
-          options={{ title: "Lista de Transasções" }}
-          component={TransacaoListScreen}
-        />
+          options={{ title: "Transasções" }}          
+        >
+          {(props) => <TransacaoListScreen {...props}/>}
+        </Drawer.Screen>
         {/* <Stack.Screen name="login" component={LoginScreen} /> */}
         <Stack.Screen name="home" component={DrawerNavigator} />
       </Stack.Navigator>
@@ -36,12 +37,12 @@ function DrawerNavigator() {
     <Drawer.Navigator>      
       <Drawer.Screen 
         name='transacaoList' 
-        options={{ title: "Lista de Transasções" }}
+        options={{ title: "ransasções" }}
         component={TransacaoListScreen}
       />
       <Drawer.Screen 
         name='transacaoForm' 
-        options={{ title: "Cadstro de Transação" }}
+        options={{ title: "Cadastro de Transação" }}
         component={TransacaoFormScreen}
       />
     </Drawer.Navigator>
