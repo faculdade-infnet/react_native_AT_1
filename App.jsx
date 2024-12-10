@@ -15,8 +15,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>        
-        {/* <Stack.Screen name="login" component={LoginScreen} />                 */}
-        <Stack.Screen name="form" component={TransacaoFormScreen} />        
+        <Stack.Screen name="login" component={LoginScreen} />
         <Stack.Screen name="home" component={DrawerNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -34,7 +33,7 @@ function DrawerNavigator() {
       />
       <Drawer.Screen 
         name='transacaoForm' 
-        options={{ title: "Fomulario" }}
+        options={{ title: "Cadstro de Transação" }}
         component={TransacaoFormScreen}
       />
     </Drawer.Navigator>
