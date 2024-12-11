@@ -1,49 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { View, Pressable, Text, StyleSheet, ActivityIndicator, useWindowDimensions } from "react-native";
+import { View, Pressable, Button, Text, TextInput, StyleSheet, ActivityIndicator, useWindowDimensions } from "react-native";
 import TransacaoItemList from "../../components/TransacaoItemList";
 import IconAdd from 'react-native-vector-icons/Ionicons';
 import { useFocusEffect } from "@react-navigation/native"; // Importa o hook
+import { Picker } from '@react-native-picker/picker';
 
 // Tela que exibe a lista de produtos
 // navigation: Uma do React Navigate pra navegar entre telas
 export default function TransacaoListScreen({ navigation }) {  
    const url = "https://react-native-infnet-default-rtdb.firebaseio.com/"
    const resource = "transacoes"
-
+   
    // Verifica se a tela está no modo landscape
    const {width, height} = useWindowDimensions();
    const isLandscape = width > height;
-
+   
+   const [filtro, setFiltro] = useState('');
+   const [ordenacao, setOrdenacao] = useState('');   
+   const [produtosFiltrados, setProdutosFiltrados] = useState([]);
    const [produtos, setProdutos] = useState([]);
    const [isRefreshing, setRefreshing] = useState(false);
    const [isLoading, setLoading] = useState(false);   
-   const [message, setMessage] = useState(null);
-
-   // Requisição GET com API, processa dados e atualizar o estado do componente   
-   const fetchProdutos = async () => {
-      setLoading(true);
-      fetch(`${url}${resource}.json`)
-         .then(res => res.json())
-         .then(prods => {
-            const produtosIds = Object.keys(prods);
-            const produtos = Object.values(prods);
-            const listaProdutos = produtosIds.map((id, index) => ({
-               id, ...produtos[index],
-            }));
-            setProdutos(listaProdutos);
-         })
-         .catch(error => setMessage(error.message))
-         .finally(
-            setLoading(false),
-            setRefreshing(false)
-         )
-   };
-
-   useFocusEffect(
-      React.useCallback(() => {
-         fetchProdutos();
-      }, []) // Apenas recria a função quando as dependências mudarem
-   );
+   const [message, setMessage] = useState(null); 
 
    // Remove do firebase com API
    const actionRemove = (produto) => {            
@@ -63,12 +41,66 @@ export default function TransacaoListScreen({ navigation }) {
       .finally(() => setLoading(false)); // Finaliza o carregamento            
    }
 
-  // Cria navegação para tela 'ProdutoShow' e passa o produto selecionado como parâmetro.
+   // Cria navegação para tela 'ProdutoShow' e passa o produto selecionado como parâmetro.
    // Define o produto selecionado e muda para a tela de detalhes.
    const actionShow = (produto) => {
       navigation.navigate('TransacaoShowScreen', produto);
    }
 
+   // Requisição GET com API, processa dados e atualizar o estado do componente   
+   const fetchProdutos = async () => {
+   setLoading(true);
+   fetch(`${url}${resource}.json`)
+      .then(res => res.json())
+      .then(prods => {
+         const produtosIds = Object.keys(prods);
+         const produtos = Object.values(prods);
+         const listaProdutos = produtosIds.map((id, index) => ({
+            id, ...produtos[index],
+         }));
+         setProdutos(listaProdutos);
+      })
+      .catch(error => setMessage(error.message))
+      .finally(
+         setLoading(false),
+         setRefreshing(false)
+      )
+   };
+
+   useFocusEffect(
+      // Recria a função quando as dependências mudarem
+      React.useCallback(() => {
+         fetchProdutos();
+      }, [])
+   );
+
+   // Filtra a lista de produtos com base no que foi digitado no filtro
+   const aplicarFiltroEOrdenar = () => {      
+      const filtrados = produtos.filter((produto) =>
+         produto.descricao.toLowerCase().includes(filtro.toLowerCase())
+         // produto.valor.includes(filtro.toLowerCase())
+      );
+      // Ordena os produtos filtrados
+      const produtosOrdenados = [...filtrados].sort((a, b) => {
+         if (ordenacao === 'descricaoCrescente') {
+            return a.descricao.localeCompare(b.descricao); 
+         } else if (ordenacao === 'descricaoDecrescente') {
+            return b.descricao.localeCompare(a.descricao);        
+         } else if (ordenacao === 'valorCrescente') {
+            return a.valor - b.valor;
+         } else if (ordenacao === 'valorDecrescente') {
+            return b.valor - a.valor;
+         }
+      });
+
+      setProdutosFiltrados(produtosOrdenados);
+   };
+
+   useEffect(() => {
+      if (produtos.length > 0) {
+         aplicarFiltroEOrdenar();
+      }
+   }, [produtos, filtro, ordenacao]);
 
    return (
       <View style={styles.container}>                  
@@ -76,8 +108,29 @@ export default function TransacaoListScreen({ navigation }) {
          {!isLoading ? (
             produtos.length > 0 ? (
                <View style={styles.listContainer}>
+                  <View style={styles.filterContainer}>
+                  <TextInput
+                     style={styles.input}
+                     placeholder="Digite para filtrar"
+                     value={filtro}
+                     onChangeText={(text) => setFiltro(text)}
+                  />
+                  <Button title="Filtrar" onPress={aplicarFiltroEOrdenar} />
+               </View>
+               <View style={styles.picker}>
+                  <Picker 
+                     selectedValue={ordenacao}
+                     onValueChange={(itemValue) => setOrdenacao(itemValue)}
+                  >
+                     <Picker.Item label="Selecione uma ordenação:" value="" enabled={false} />
+                     <Picker.Item label="Descricão (Crescente)" value="descricaoCrescente" />
+                     <Picker.Item label="Descricão (Decrescente)" value="descricaoDecrescente" />
+                     <Picker.Item label="Valor (Crescente)" value="valorCrescente" />
+                     <Picker.Item label="Valor (Decrescente)" value="valorDecrescente" />
+                  </Picker>
+               </View>
                   <TransacaoItemList 
-                     produtos={produtos} 
+                     produtos={produtosFiltrados} 
                      actionRemove={actionRemove}
                      actionShow={actionShow}
                      isLandscape={isLandscape}

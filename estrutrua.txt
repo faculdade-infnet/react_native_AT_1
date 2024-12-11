@@ -38,3 +38,9 @@ Tarefas - App Cconversor de moedas
 
 Modo retrato (portrait): Exiba apenas os campos Descrição, Valor e Data.
 Modo paisagem (landscape): Exiba informações adicionais, como Hora, Categoria, Tipo e Moeda, além dos dados já visíveis no modo retrato.          
+Descrição
+Valor
+Date
+Time
+Categoria
+Moeda
