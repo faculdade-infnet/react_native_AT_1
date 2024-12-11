@@ -23,15 +23,18 @@ Rotas
 Tarefas - App Cconversor de moedas
 (ok)      - 01 - Estrutura dos diretórios
 (ok)      - 04 - Navegação entre telas
-(a fazer) - 02 - Criar Tela (TransacaoListScreen)
-(a fazer) - 03 - Tela responsiva (TransacaoItemList)
+(ok) - 02 - Criar Tela (TransacaoListScreen)
+(ok) - 03 - Tela responsiva (TransacaoItemList)
 (a fazer) - 05 - Tela com filtro (TransacaoListScreen)
-(a fazer) - 06 - Carregar dados API de moedas
+(ok)      - 06 - Carregar dados API de moedas
           - 06A - API lista de moedas
-          - 06B - API obter cotaçã oem uma dta específica
-(a fazer) - 07 - Implementar formulários
-(a fazer) - 07A - Formulário de autenticação (LoginScreen)
+          - 06B - API obter cotação em uma data específica
+(ok) - 07 - Implementar formulários
+(ok) - 07A - Formulário de autenticação (LoginScreen)
           - 07B - Formulário de cadastro de transação (TransacaoFormScreen)          
-(a fazer) - 08 - Criar gestos
+(ok) - 08 - Criar gestos
           - 08A - Gesto apagar
           - 08B - Gesto editar
+
+Modo retrato (portrait): Exiba apenas os campos Descrição, Valor e Data.
+Modo paisagem (landscape): Exiba informações adicionais, como Hora, Categoria, Tipo e Moeda, além dos dados já visíveis no modo retrato.          
