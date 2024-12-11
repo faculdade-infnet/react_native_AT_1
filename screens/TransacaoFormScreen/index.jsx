@@ -28,10 +28,7 @@ export default function TransacaoFormScreen() {
     const getCotacao = async (date, moeda) => {
         try {
             const response = await fetch(`https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoMoedaDia(moeda=@moeda,dataCotacao=@dataCotacao)?@moeda='${moeda}'&@dataCotacao='${date}'&$top=1&$format=json`);
-            const data = await response.json();
-            
-            console.log("teste 01");
-            console.log("teste", data);
+            const data = await response.json();                
             // Verificar se a resposta contém o valor esperado
             if (data.value && data.value.length > 0) {
                 const cotacaoObtida = data.value[0]?.cotacaoCompra;  // ou 'cotacaoVenda'              
@@ -52,9 +49,8 @@ export default function TransacaoFormScreen() {
         if (cotacaoObtida) {
             novoItem.cotacao = cotacaoObtida;
             const precoConvertido = parseFloat((novoItem.valor * cotacaoObtida).toFixed(2));        
-            novoItem.preco = precoConvertido;            
-            SalvarFirebase(novoItem, produtos, setProdutos, setLoading);
-            console.log("11");            
+            novoItem.valor = precoConvertido;            
+            SalvarFirebase(novoItem, produtos, setProdutos, setLoading);                   
         } else {
             alert("Erro: Cotação não encontrada, selecione uma data válida / Falha na conecção");
         }            

@@ -84,6 +84,7 @@ export default function TransacaoForm({onSubmit, listaMoedas, listaCategorias}) 
     }   
 
     const onSave = async (novoItem) => {     
+        console.log(novoItem);
         // Formatar data para mes-dia-ano               
         novoItem.date = date.toLocaleDateString('en-US');        
         const result = validarCampos();
@@ -169,7 +170,7 @@ export default function TransacaoForm({onSubmit, listaMoedas, listaCategorias}) 
             onPress={ () => {
             const novoItem = {
                 descricao: descricao,
-                preco: valor,
+                valor: valor,
                 date: date.toLocaleDateString('pt-BR'),
                 time: time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
                 moeda: moeda,

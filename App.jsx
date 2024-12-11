@@ -1,7 +1,8 @@
 // #region Imports
+import LoginScreen from './screens/LoginScreen';
 import TransacaoListScreen from './screens/TransacaoListScreen';
 import TransacaoFormScreen from './screens/TransacaoFormScreen';
-import LoginScreen from './screens/LoginScreen';
+import TransacaoShowScreen from './screens/TransacaoShowScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -15,16 +16,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>        
-        {/* <Stack.Screen  name='transacaoForm' 
-                       options={{ title: "Cadstro de Transação" }}
-                       component={TransacaoFormScreen} /> */}
-        <Drawer.Screen 
-          name='transacaoList' 
-          options={{ title: "Transasções" }}          
-        >
-          {(props) => <TransacaoListScreen {...props}/>}
-        </Drawer.Screen>
-        {/* <Stack.Screen name="login" component={LoginScreen} /> */}
+        <Stack.Screen name="login" component={LoginScreen} />
         <Stack.Screen name="home" component={DrawerNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -36,14 +28,24 @@ function DrawerNavigator() {
   return (
     <Drawer.Navigator>      
       <Drawer.Screen 
-        name='transacaoList' 
-        options={{ title: "ransasções" }}
-        component={TransacaoListScreen}
-      />
+        name='TransacaoList' 
+        options={{ title: "Transações" }}        
+      >
+        {(props) => <TransacaoListScreen {...props}/>}
+      </Drawer.Screen>
       <Drawer.Screen 
-        name='transacaoForm' 
+        name='TransacaoForm' 
         options={{ title: "Cadastro de Transação" }}
         component={TransacaoFormScreen}
+      />
+      <Drawer.Screen 
+        name='TransacaoShowScreen' 
+        options={() => ({
+          title: "Transação",
+          drawerLabel: () => null,
+          drawerItemStyle: { display: 'none' }
+        })}
+        component={TransacaoShowScreen}
       />
     </Drawer.Navigator>
   );

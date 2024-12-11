@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Pressable, Text, StyleSheet, ActivityIndicator, useWindowDimensions } from "react-native";
 import TransacaoItemList from "../../components/TransacaoItemList";
+import IconAdd from 'react-native-vector-icons/Ionicons';
+import { useFocusEffect } from "@react-navigation/native"; // Importa o hook
 
 // Tela que exibe a lista de produtos
 // navigation: Uma do React Navigate pra navegar entre telas
@@ -13,35 +15,35 @@ export default function TransacaoListScreen({ navigation }) {
    const isLandscape = width > height;
 
    const [produtos, setProdutos] = useState([]);
+   const [isRefreshing, setRefreshing] = useState(false);
+   const [isLoading, setLoading] = useState(false);   
    const [message, setMessage] = useState(null);
-   const [isLoading, setLoading] = useState(false);
-   const [progress, setProgress] = useState(0);
 
    // Requisição GET com API, processa dados e atualizar o estado do componente   
-   useEffect(() => {
+   const fetchProdutos = async () => {
       setLoading(true);
-      fetch(`${url}${resource}.json`) // get
-          .then(res => res.json())
-          .then(prods => {
-              const produtosIds = Object.keys(prods);
-              const produtos = Object.values(prods);
-              const total = produtos.length;
-              let progress = 0;
-              let listaProdutos = [];
-              produtosIds.forEach((id, index) => {
-                  listaProdutos.push({ id, ...produtos[index]});  // Monta um objeto combinando os atributos
-                  progress = (index + 1) / total;                 // Calcula o progresso, item a item
-                  setProgress(progress);                          // Atualiza o progresso  
-              });
-              setProdutos(listaProdutos);
-          })
-          .catch(error => setMessage(error.message))
-          .finally(setLoading(false));
-   }, []);
+      fetch(`${url}${resource}.json`)
+         .then(res => res.json())
+         .then(prods => {
+            const produtosIds = Object.keys(prods);
+            const produtos = Object.values(prods);
+            const listaProdutos = produtosIds.map((id, index) => ({
+               id, ...produtos[index],
+            }));
+            setProdutos(listaProdutos);
+         })
+         .catch(error => setMessage(error.message))
+         .finally(
+            setLoading(false),
+            setRefreshing(false)
+         )
+   };
 
-   // useEffect(() => {
-   //      setLandscape(width > height);
-   //  }, [width, height]);
+   useFocusEffect(
+      React.useCallback(() => {
+         fetchProdutos();
+      }, []) // Apenas recria a função quando as dependências mudarem
+   );
 
    // Remove do firebase com API
    const actionRemove = (produto) => {            
@@ -64,28 +66,22 @@ export default function TransacaoListScreen({ navigation }) {
   // Cria navegação para tela 'ProdutoShow' e passa o produto selecionado como parâmetro.
    // Define o produto selecionado e muda para a tela de detalhes.
    const actionShow = (produto) => {
-      navigation.navigate('ProdutoShow', produto);
+      navigation.navigate('TransacaoShowScreen', produto);
    }
 
 
    return (
-      <View style={styles.container}>
-         <Text>{isLandscape ? 'Landscape' : 'Portrait'}</Text>
-         <Text>{width}</Text>
-         <Text>{height}</Text>
-         {/* isLoading = true, exibe um indicador de carregamento (ActivityIndicator). */}
+      <View style={styles.container}>                  
          {isLoading && <ActivityIndicator size="large" />}
-         {/* isLoading = false e message != null, exibe mensagem. */}
-         {!isLoading && message && <Text>{message}</Text>}         
-         {/* isLoading = false e produtos>0, exibe lista de produtos
-         caso contrário, exibe mensagem "Nenhum produto cadastrado". */}
          {!isLoading ? (
             produtos.length > 0 ? (
                <View style={styles.listContainer}>
-               <TransacaoItemList 
-                  produtos={produtos} 
-                  actionRemove={actionRemove}
-                  actionShow={actionShow}/>
+                  <TransacaoItemList 
+                     produtos={produtos} 
+                     actionRemove={actionRemove}
+                     actionShow={actionShow}
+                     isLandscape={isLandscape}
+                  />
                </View>
             ) : (
                <Text>Nenhum produto cadastrado.</Text>
@@ -93,12 +89,16 @@ export default function TransacaoListScreen({ navigation }) {
          ) : null}
          <View style={styles.navContainer}>
             <Pressable
-               style={styles.navOption}
+               // style={styles.navOption}
                onPress={() => {
-                  navigation.navigate('ProdutoForm');
+                  navigation.navigate('TransacaoForm');
                }}
             >
-               <Text style={styles.navOptionLabel}>+</Text>
+               <IconAdd name="add" 
+                  size={styles.iconeAdd.size} 
+                  color={styles.iconeAdd.color}
+                  style={styles.iconeAdd}
+               />
             </Pressable>
          </View>
       </View>
@@ -111,19 +111,24 @@ const styles = StyleSheet.create({
       backgroundColor: '#ecf0f1',
       padding: 8,
    },
+   iconeAdd: {
+      size: 40,
+      margin: 10,     
+      color: "#686666",         
+      
+      justifyContent: "center",
+      backgroundColor: "#4fc959",
+      borderRadius: 50,
+   },
    listContainer: {
       flex: 1,
    },
    navContainer: {
+      position: "absolute",
+      bottom: 10,
+      right: 10,
       flexDirection: "row",
       justifyContent: "flex-end",
-   },
-   navOption: {
-      paddingVertical: 8,
-      width: 30,
-      backgroundColor: "#8ecae6",
-      alignItems: "center",
-      borderRadius: 50,
    },
    navOptionLabel: {
       fontSize: 20,

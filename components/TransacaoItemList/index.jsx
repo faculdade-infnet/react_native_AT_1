@@ -1,12 +1,13 @@
 import { FlatList, StyleSheet, Platform } from 'react-native';
 import Card from '../Card';
 
-export default function TransacaoItemList({ produtos, actionRemove, actionShow }) {      
+export default function TransacaoItemList({ produtos, actionRemove, actionShow, isLandscape }) {      
   const createItemView = ({ item }) => (
     <Card 
        prod={item}
        actionRemove={actionRemove}
        actionShow={actionShow}
+       isLandscape={isLandscape}
     />
  );
 
@@ -18,17 +19,3 @@ export default function TransacaoItemList({ produtos, actionRemove, actionShow }
     />
  );
 }
-
-const styles = StyleSheet.create({
- pressableContainer: {
-    // paddingHorizontal: 5,
-    // paddingVertical: 3,
-    // marginVertical: 2,      
-    borderRadius: 5,
-    ...Platform.select({
-       android: { marginTop: 10 },
-       ios: { marginTop: 15 },
-       web: { marginTop: 20 },
-    })
- },
-});
