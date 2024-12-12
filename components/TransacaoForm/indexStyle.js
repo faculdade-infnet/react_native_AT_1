@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
         height: '100%',      
         justifyContent: "center",    
         paddingHorizontal: 10,
+        backgroundColor: "#fff",
     },
     box:{         
         marginVertical: 5,

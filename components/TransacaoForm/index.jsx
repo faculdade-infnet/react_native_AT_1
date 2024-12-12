@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import IconDate from 'react-native-vector-icons/Entypo';
 import IconTime from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import styles from './indexStyle';
 
 export default function TransacaoForm({onSubmit, listaMoedas, listaCategorias}) {      
     const [datePickerShow, setDatePickerShow] = useState(false);
