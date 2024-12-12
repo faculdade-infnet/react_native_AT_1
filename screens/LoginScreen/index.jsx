@@ -3,8 +3,8 @@ import { View, Text, Image, TextInput, Pressable } from 'react-native';
 import styles from './indexStyle';
 
 export default function HomeScreen ({ navigation }){  
-  const [userName, setUserName] = useState("");
-  const [userSenha, setUserSenha] = useState("");
+  const [userName, setUserName] = useState("admin");
+  const [userSenha, setUserSenha] = useState("00");
 
   const imgUser = 'https://img.freepik.com/vetores-premium/icone-de-circulo-de-usuario-anonimo-estilo-simples-de-ilustracao-vetorial-com-sombra-longa_520826-1931.jpg?w=740'
   
