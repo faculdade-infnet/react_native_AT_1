@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Platform, Alert } from 'react-native';
 import { GestureHandlerRootView, Pressable } from 'react-native-gesture-handler';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
 import Reanimated, { useAnimatedStyle } from 'react-native-reanimated';
 import IconDelete from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEdit from 'react-native-vector-icons/Entypo';
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
 
 
 export default function Card({ prod, actionRemove, actionShow, isLandscape }) {
