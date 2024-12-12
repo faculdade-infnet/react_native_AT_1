@@ -1,12 +1,10 @@
-// #region Imports
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import LoginScreen from './screens/LoginScreen';
 import TransacaoListScreen from './screens/TransacaoListScreen';
 import TransacaoFormScreen from './screens/TransacaoFormScreen';
 import TransacaoShowScreen from './screens/TransacaoShowScreen';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-// #endregion Imports
 
 // Objeto do tipo stack para navegação
 const Stack = createNativeStackNavigator();

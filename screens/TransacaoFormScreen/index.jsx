@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import TransacaoForm from "../../components/TransacaoForm";
-import { ActivityIndicator, View, Text, StyleSheet } from "react-native"
+import { ActivityIndicator, View } from "react-native"
 import obterMoedas from '../../api/obterMoedas';
 import listaCategorias from '../../data/categorias';
 import SalvarFirebase  from '../../api/salvarFirebase';

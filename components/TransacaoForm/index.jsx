@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Switch, Pressable, Alert } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TextInput, Switch, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import IconDate from 'react-native-vector-icons/Entypo';
 import IconTime from 'react-native-vector-icons/MaterialCommunityIcons';
-import obterMoedas from '../../api/obterMoedas';
-import SalvarFirebase  from '../../api/salvarFirebase';
 
 
 export default function TransacaoForm({onSubmit, listaMoedas, listaCategorias}) {      
@@ -189,71 +187,3 @@ export default function TransacaoForm({onSubmit, listaMoedas, listaCategorias}) 
         </View>
     )
 }
-
-
-const styles = StyleSheet.create({
-    container: {   
-        height: '100%',      
-        justifyContent: "center",    
-        paddingHorizontal: 10,
-    },
-    box:{         
-        marginVertical: 5,
-        backgroundColor: "#e6e8e9",
-        borderBottomWidth: 1,
-        borderBottomColor: "#3e3e3e",
-        borderRadius: 5
-    },
-    containerTime:{
-        flexDirection: "row",
-        justifyContent: 'space-between', 
-        alignItems: "center",
-        paddingRight:10,  
-    },
-    containerSwitch:{
-        flexDirection: "row",
-        justifyContent: 'space-between', 
-        alignItems: "center",
-        paddingHorizontal: 10,                  
-    }, 
-    switch: {
-        flexDirection: "row",
-        alignItems: "center",    
-        marginVertical: 5,
-    }, 
-    pressableTime: {  
-        flexDirection: "row",    
-        marginRight: 10,
-        paddingRight: 10,
-        marginVertical: 2,
-        borderRadius: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#e6e8e9',  
-    },
-    pressedTime: {
-        backgroundColor: '#3e3e3e',    
-    },
-    notPressedTime: {
-        // backgroundColor: '#e6e8e9',  
-    },
-    containerImage: {
-        marginBottom: 100,
-    }, 
-    icone: {
-        size: 40, 
-        color: "#000",
-        margin: 10,  
-    },    
-    textInput: {        
-        padding: 10,          
-    },  
-    button: {   
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-    },
-    text:{
-        fontSize: 20, 
-    }  
-})

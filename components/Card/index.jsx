@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, Platform, Alert } from 'react-native';
+import { View, Text } from 'react-native';
 import { GestureHandlerRootView, Pressable } from 'react-native-gesture-handler';
 import Reanimated, { useAnimatedStyle } from 'react-native-reanimated';
 import IconDelete from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEdit from 'react-native-vector-icons/Entypo';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
-
+import styles from './indexStyle';
 
 export default function Card({ prod, actionRemove, actionShow, isLandscape }) {
    return (
@@ -86,55 +86,3 @@ export default function Card({ prod, actionRemove, actionShow, isLandscape }) {
       </GestureHandlerRootView>
    );
 }
-
-
-const styles = StyleSheet.create({
-   icone: {
-      size: 40,
-      margin: 10,  
-   }, 
-   iconeDelete: {      
-      color: "#c53232",      
-   }, 
-   btnDelete:{
-      width: 60,
-      height: 60,
-      backgroundColor: "#979797",
-      borderRadius: 5,
-   },
-   iconeEdit: {      
-      color: "#0d9e19",      
-   }, 
-   btnEdit:{
-      width: 60,
-      height: 60,
-      backgroundColor: "#979797",
-      borderRadius: 5,
-   },
-   container: {
-      paddingHorizontal: 5,
-      paddingVertical: 3,
-      borderWidth: 1,
-      borderColor: '#8d99ae',
-      borderRadius: 5,
-   },
-   box:{
-      flexDirection: 'row',
-      gap: 10,
-   },
-   child: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-   },
-   cardFooterPotrait: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-   },
-   cardFooterLandscape: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-   },
-   title: {
-      fontSize: 25,
-   },
-});

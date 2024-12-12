@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Pressable, Button, Text, TextInput, StyleSheet, ActivityIndicator, useWindowDimensions } from "react-native";
-import TransacaoItemList from "../../components/TransacaoItemList";
+import { View, Pressable, Button, Text, TextInput, alert, ActivityIndicator, useWindowDimensions } from "react-native";
 import IconAdd from 'react-native-vector-icons/Ionicons';
 import { useFocusEffect } from "@react-navigation/native"; // Importa o hook
 import { Picker } from '@react-native-picker/picker';
+import styles from './indexStyle';
+import TransacaoItemList from "../../components/TransacaoItemList";
+
 
 // Tela que exibe a lista de produtos
 // navigation: Uma do React Navigate pra navegar entre telas
@@ -75,10 +77,9 @@ export default function TransacaoListScreen({ navigation }) {
    );
 
    // Filtra a lista de produtos com base no que foi digitado no filtro
-   const aplicarFiltroEOrdenar = () => {      
+   const aplicarFiltroEOrdenar = () => {       
       const filtrados = produtos.filter((produto) =>
          produto.descricao.toLowerCase().includes(filtro.toLowerCase())
-         // produto.valor.includes(filtro.toLowerCase())
       );
       // Ordena os produtos filtrados
       const produtosOrdenados = [...filtrados].sort((a, b) => {
@@ -107,28 +108,25 @@ export default function TransacaoListScreen({ navigation }) {
          {isLoading && <ActivityIndicator size="large" />}
          {!isLoading ? (
             produtos.length > 0 ? (
-               <View style={styles.listContainer}>
-                  <View style={styles.filterContainer}>
+               <View style={styles.listContainer}>                  
                   <TextInput
-                     style={styles.input}
-                     placeholder="Digite para filtrar"
+                     style={styles.textInput}
+                     placeholder="Digite para filtrar por descrição"
                      value={filtro}
                      onChangeText={(text) => setFiltro(text)}
-                  />
-                  <Button title="Filtrar" onPress={aplicarFiltroEOrdenar} />
-               </View>
-               <View style={styles.picker}>
-                  <Picker 
-                     selectedValue={ordenacao}
-                     onValueChange={(itemValue) => setOrdenacao(itemValue)}
-                  >
-                     <Picker.Item label="Selecione uma ordenação:" value="" enabled={false} />
-                     <Picker.Item label="Descricão (Crescente)" value="descricaoCrescente" />
-                     <Picker.Item label="Descricão (Decrescente)" value="descricaoDecrescente" />
-                     <Picker.Item label="Valor (Crescente)" value="valorCrescente" />
-                     <Picker.Item label="Valor (Decrescente)" value="valorDecrescente" />
-                  </Picker>
-               </View>
+                  />                                    
+                  <View style={styles.picker}>
+                     <Picker 
+                        selectedValue={ordenacao}
+                        onValueChange={(itemValue) => setOrdenacao(itemValue)}
+                     >
+                        <Picker.Item label="Selecione uma ordenação:" value="" enabled={false} />
+                        <Picker.Item label="Descricão (Crescente)" value="descricaoCrescente" />
+                        <Picker.Item label="Descricão (Decrescente)" value="descricaoDecrescente" />
+                        <Picker.Item label="Valor (Crescente)" value="valorCrescente" />
+                        <Picker.Item label="Valor (Decrescente)" value="valorDecrescente" />
+                     </Picker>
+                  </View>
                   <TransacaoItemList 
                      produtos={produtosFiltrados} 
                      actionRemove={actionRemove}
@@ -157,33 +155,3 @@ export default function TransacaoListScreen({ navigation }) {
       </View>
    );
 }
-
-const styles = StyleSheet.create({
-   container: {
-      flex: 1,
-      backgroundColor: '#ecf0f1',
-      padding: 8,
-   },
-   iconeAdd: {
-      size: 40,
-      margin: 10,     
-      color: "#686666",         
-      
-      justifyContent: "center",
-      backgroundColor: "#4fc959",
-      borderRadius: 50,
-   },
-   listContainer: {
-      flex: 1,
-   },
-   navContainer: {
-      position: "absolute",
-      bottom: 10,
-      right: 10,
-      flexDirection: "row",
-      justifyContent: "flex-end",
-   },
-   navOptionLabel: {
-      fontSize: 20,
-   }
-});
